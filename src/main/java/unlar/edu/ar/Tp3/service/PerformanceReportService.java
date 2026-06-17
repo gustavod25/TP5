@@ -1,9 +1,9 @@
-﻿package unlar.edu.ar.service;
+﻿package unlar.edu.ar.Tp3.service;
 
-import unlar.edu.ar.model.Categoria;
-import unlar.edu.ar.model.Producto;
-import unlar.edu.ar.repository.CategoriaRepository;
-import unlar.edu.ar.repository.ProductoRepository;
+import unlar.edu.ar.Tp3.model.Categoria;
+import unlar.edu.ar.Tp3.model.Producto;
+import unlar.edu.ar.Tp3.repository.CategoriaRepository;
+import unlar.edu.ar.Tp3.repository.ProductoRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -11,24 +11,20 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-
 @Service
 public class PerformanceReportService {
 
     private final ProductoRepository productoRepository;
     private final CategoriaRepository categoriaRepository;
 
-    
-    private static final int[] DATASET_SIZES = {1_000, 10_000, 100_000};
+    private static final int[] DATASET_SIZES = { 1_000, 10_000, 100_000 };
 
-    
     public PerformanceReportService(ProductoRepository productoRepository,
-                                     CategoriaRepository categoriaRepository) {
+            CategoriaRepository categoriaRepository) {
         this.productoRepository = productoRepository;
         this.categoriaRepository = categoriaRepository;
     }
 
-    
     public Map<String, Object> generarReporte() {
         Map<String, Object> reporte = new LinkedHashMap<>();
         reporte.put("descripcion", "Reporte de complejidad algorÃ­tmica Big O");
@@ -95,4 +91,3 @@ public class PerformanceReportService {
         return reporte;
     }
 }
-

@@ -1,19 +1,18 @@
-﻿package unlar.edu.ar.service;
+﻿package unlar.edu.ar.Tp3.service;
 
-import unlar.edu.ar.dto.MovimientoRequest;
-import unlar.edu.ar.dto.MovimientoResponse;
-import unlar.edu.ar.exception.InsufficientStockException;
-import unlar.edu.ar.exception.ResourceNotFoundException;
-import unlar.edu.ar.model.MovimientoInventario;
-import unlar.edu.ar.model.Producto;
-import unlar.edu.ar.model.TipoMovimiento;
-import unlar.edu.ar.repository.MovimientoRepository;
-import unlar.edu.ar.repository.ProductoRepository;
+import unlar.edu.ar.Tp3.dto.MovimientoRequest;
+import unlar.edu.ar.Tp3.dto.MovimientoResponse;
+import unlar.edu.ar.Tp3.exception.InsufficientStockException;
+import unlar.edu.ar.Tp3.exception.ResourceNotFoundException;
+import unlar.edu.ar.Tp3.model.MovimientoInventario;
+import unlar.edu.ar.Tp3.model.Producto;
+import unlar.edu.ar.Tp3.model.TipoMovimiento;
+import unlar.edu.ar.Tp3.repository.MovimientoRepository;
+import unlar.edu.ar.Tp3.repository.ProductoRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
 
 @Service
 public class MovimientoServiceImpl implements MovimientoService {
@@ -21,14 +20,12 @@ public class MovimientoServiceImpl implements MovimientoService {
     private final MovimientoRepository movimientoRepository;
     private final ProductoRepository productoRepository;
 
-    
     public MovimientoServiceImpl(MovimientoRepository movimientoRepository,
-                                  ProductoRepository productoRepository) {
+            ProductoRepository productoRepository) {
         this.movimientoRepository = movimientoRepository;
         this.productoRepository = productoRepository;
     }
 
-    
     @Override
     public MovimientoResponse registrar(MovimientoRequest request) {
         Producto producto = productoRepository.findById(request.productoId())
@@ -52,7 +49,6 @@ public class MovimientoServiceImpl implements MovimientoService {
         return toResponse(movimientoRepository.save(movimiento));
     }
 
-    
     @Override
     public List<MovimientoResponse> listarPorProducto(Long productoId) {
         if (!productoRepository.existsById(productoId)) {
@@ -63,10 +59,8 @@ public class MovimientoServiceImpl implements MovimientoService {
                 .toList();
     }
 
-    
     private MovimientoResponse toResponse(MovimientoInventario m) {
         return new MovimientoResponse(m.getId(), m.getProductoId(), m.getTipo(),
                 m.getCantidad(), m.getStockResultante(), m.getMotivo(), m.getFecha());
     }
 }
-

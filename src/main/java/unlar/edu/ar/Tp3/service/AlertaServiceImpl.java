@@ -1,12 +1,13 @@
-﻿package unlar.edu.ar.Tp3service;
+﻿package unlar.edu.ar.Tp3.service;
 
 import unlar.edu.ar.Tp3.model.*;
-import unlar.edu.ar.Tp3.*;
+
 import unlar.edu.ar.Tp3.repository.ProductoRepository;
 import org.springframework.stereotype.Service;
+import unlar.edu.ar.Tp3.dto.AlertaStockResponse;
+import unlar.edu.ar.Tp3.config.StockConfig;
 
 import java.util.List;
-
 
 @Service
 public class AlertaServiceImpl implements AlertaService {
@@ -14,13 +15,11 @@ public class AlertaServiceImpl implements AlertaService {
     private final ProductoRepository productoRepository;
     private final StockConfig stockConfig;
 
-    
     public AlertaServiceImpl(ProductoRepository productoRepository, StockConfig stockConfig) {
         this.productoRepository = productoRepository;
         this.stockConfig = stockConfig;
     }
 
-    
     @Override
     public List<AlertaStockResponse> obtenerProductosEnAlerta() {
         return productoRepository.findAll().stream()
@@ -29,7 +28,6 @@ public class AlertaServiceImpl implements AlertaService {
                 .toList();
     }
 
-    
     private NivelAlerta calcularNivel(Producto producto) {
         if (producto.getStock() < stockConfig.critico()) {
             return NivelAlerta.CRITICO;
@@ -37,10 +35,8 @@ public class AlertaServiceImpl implements AlertaService {
         return NivelAlerta.BAJO;
     }
 
-    
     private AlertaStockResponse toAlertaResponse(Producto p) {
         return new AlertaStockResponse(p.getId(), p.getNombre(),
                 p.getStock(), calcularNivel(p));
     }
 }
-

@@ -1,19 +1,18 @@
-﻿package unlar.edu.ar.service;
+﻿package unlar.edu.ar.Tp3.service;
 
-import unlar.edu.ar.dto.CategoriaResponse;
-import unlar.edu.ar.dto.ProductoRequest;
-import unlar.edu.ar.dto.ProductoResponse;
-import unlar.edu.ar.exception.ResourceNotFoundException;
-import unlar.edu.ar.model.Categoria;
-import unlar.edu.ar.model.Producto;
-import unlar.edu.ar.repository.CategoriaRepository;
-import unlar.edu.ar.repository.ProductoRepository;
+import unlar.edu.ar.Tp3.dto.CategoriaResponse;
+import unlar.edu.ar.Tp3.dto.ProductoRequest;
+import unlar.edu.ar.Tp3.dto.ProductoResponse;
+import unlar.edu.ar.Tp3.exception.ResourceNotFoundException;
+import unlar.edu.ar.Tp3.model.Categoria;
+import unlar.edu.ar.Tp3.model.Producto;
+import unlar.edu.ar.Tp3.repository.CategoriaRepository;
+import unlar.edu.ar.Tp3.repository.ProductoRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Stream;
-
 
 @Service
 public class ProductoServiceImpl implements ProductoService {
@@ -21,17 +20,15 @@ public class ProductoServiceImpl implements ProductoService {
     private final ProductoRepository productoRepository;
     private final CategoriaRepository categoriaRepository;
 
-    
     public ProductoServiceImpl(ProductoRepository productoRepository,
-                                CategoriaRepository categoriaRepository) {
+            CategoriaRepository categoriaRepository) {
         this.productoRepository = productoRepository;
         this.categoriaRepository = categoriaRepository;
     }
 
-    
     @Override
     public List<ProductoResponse> listarTodos(Long categoriaId, Double precioMin,
-                                               Double precioMax, Boolean enStock) {
+            Double precioMax, Boolean enStock) {
         Stream<Producto> stream = productoRepository.findAll().stream();
         if (categoriaId != null) {
             stream = stream.filter(p -> p.getCategoria().getId().equals(categoriaId));
@@ -48,7 +45,6 @@ public class ProductoServiceImpl implements ProductoService {
         return stream.map(this::toResponse).toList();
     }
 
-    
     @Override
     public ProductoResponse buscarPorId(Long id) {
         return productoRepository.findById(id)
@@ -57,7 +53,6 @@ public class ProductoServiceImpl implements ProductoService {
                         "Producto con id " + id + " no encontrado"));
     }
 
-    
     @Override
     public ProductoResponse crear(ProductoRequest request) {
         Categoria categoria = categoriaRepository.findById(request.categoriaId())
@@ -68,7 +63,6 @@ public class ProductoServiceImpl implements ProductoService {
         return toResponse(productoRepository.save(producto));
     }
 
-    
     @Override
     public ProductoResponse actualizar(Long id, ProductoRequest request) {
         Producto existente = productoRepository.findById(id)
@@ -84,7 +78,6 @@ public class ProductoServiceImpl implements ProductoService {
         return toResponse(productoRepository.save(existente));
     }
 
-    
     @Override
     public void eliminar(Long id) {
         if (!productoRepository.existsById(id)) {
@@ -93,7 +86,6 @@ public class ProductoServiceImpl implements ProductoService {
         productoRepository.deleteById(id);
     }
 
-    
     @Override
     public List<ProductoResponse> buscarPorNombre(String texto) {
         return productoRepository.buscarPorNombre(texto).stream()
@@ -101,13 +93,12 @@ public class ProductoServiceImpl implements ProductoService {
                 .toList();
     }
 
-    
     @Override
     public List<ProductoResponse> listarOrdenados(String campo, String orden) {
         Comparator<Producto> comparator = switch (campo.toLowerCase()) {
             case "precio" -> Comparator.comparingDouble(Producto::getPrecio);
-            case "stock"  -> Comparator.comparingInt(Producto::getStock);
-            default       -> Comparator.comparing(Producto::getNombre);
+            case "stock" -> Comparator.comparingInt(Producto::getStock);
+            default -> Comparator.comparing(Producto::getNombre);
         };
         if ("desc".equalsIgnoreCase(orden)) {
             comparator = comparator.reversed();
@@ -118,7 +109,6 @@ public class ProductoServiceImpl implements ProductoService {
                 .toList();
     }
 
-    
     private ProductoResponse toResponse(Producto p) {
         CategoriaResponse cat = new CategoriaResponse(
                 p.getCategoria().getId(),
@@ -128,4 +118,3 @@ public class ProductoServiceImpl implements ProductoService {
                 p.getPrecio(), p.getStock(), cat);
     }
 }
-
